@@ -21,7 +21,7 @@
 #define _BOARD_DRIVER_LED_
 
 #include <sam.h>
-#include "board_definitions.h"
+#include "board_definitions _new.h"
 
 #if defined(BOARD_LED_PORT)
 inline void LED_init(void) { PORT->Group[BOARD_LED_PORT].DIRSET.reg = (1<<BOARD_LED_PIN); }

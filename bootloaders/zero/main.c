@@ -21,7 +21,7 @@
 #include <sam.h>
 #include "sam_ba_monitor.h"
 #include "sam_ba_serial.h"
-#include "board_definitions.h"
+#include "board_definitions _new.h"
 #include "board_driver_led.h"
 #include "board_driver_i2c.h"
 #include "board_driver_pmic.h"
@@ -29,6 +29,7 @@
 #include "sam_ba_usb.h"
 #include "sam_ba_cdc.h"
 
+uint16_t i=0,j=0;
 extern uint32_t __sketch_vectors_ptr; // Exported value from linker script
 extern void board_init(void);
 
@@ -68,7 +69,7 @@ static void check_start_application(void)
   if (__sketch_vectors_ptr == 0xFFFFFFFF)
   {
     /* Stay in bootloader */
-    return;
+    //return;
   }
 
   /*
@@ -89,6 +90,23 @@ static void check_start_application(void)
     /* Stay in bootloader */
     return;
   }
+  if((PM->RCAUSE.bit.SYST==1) && (PM->RCAUSE.bit.POR==0))
+  {
+	  while(1)
+	  {
+		  LED_toggle();
+	  for (uint32_t i=0; i<125000; i++); /* 500ms */
+	  }
+	  //return;
+  }
+  __disable_irq();
+    LED_on();
+	for(j=0;j<10;j++)
+	{
+   for (uint32_t i=0; i<125000; i++); /* 500ms */
+	}
+   NVIC_SystemReset();
+  while (true);
 
 #if defined(BOOT_DOUBLE_TAP_ADDRESS)
   #define DOUBLE_TAP_MAGIC 0x07738135
@@ -179,7 +197,7 @@ int main(void)
   P_USB_CDC pCdc;
 #endif
   DEBUG_PIN_HIGH;
-
+LED_init();
   /* Jump in application if condition is satisfied */
   check_start_application();
 
@@ -228,10 +246,17 @@ int main(void)
 
   /* Initialize LEDs */
   LED_init();
+  LED_toggle();
   LEDRX_init();
   LEDRX_off();
   LEDTX_init();
   LEDTX_off();
+  i++;
+  LED_toggle();
+  
+  
+	
+  
 
   /* Start the sys tick (1 ms) */
   SysTick_Config(1000);
@@ -274,6 +299,7 @@ int main(void)
 
 void SysTick_Handler(void)
 {
+  //LED_on();
   LED_pulse();
 
   sam_ba_monitor_sys_tick();

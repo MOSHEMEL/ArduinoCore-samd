@@ -20,7 +20,7 @@
 #ifndef _MONITOR_SAM_BA_H_
 #define _MONITOR_SAM_BA_H_
 
-#include "board_definitions.h"
+#include "board_definitions _new.h"
 
 #define SAM_BA_VERSION              "2.0"
 
